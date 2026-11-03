@@ -10,10 +10,12 @@ LABEL org.opencontainers.image.source="https://github.com/onepush-dev/plmail" \
 # Defaults baked into the image because Railway templates drop plain variable values.
 # Any of these can still be overridden in the service Variables.
 ENV APP_ALL_IN_ONE=1 \
-    SERVER_NAME=":80" \
     APP_STORAGE_DIR=/app/var/data \
     APP_SECRETS_DIR=/app/var/data/secrets \
     APP_SECRETS_FILE=/app/var/data/secrets/generated.env \
     TRUSTED_PROXIES="127.0.0.1,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,fd00::/8" \
     APP_DEFAULT_TIMEZONE=UTC
 EXPOSE 80
+COPY --chmod=755 railway/railway-entrypoint.sh /usr/local/bin/railway-entrypoint
+ENTRYPOINT ["railway-entrypoint"]
+CMD [ "frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile" ]
